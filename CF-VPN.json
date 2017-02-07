@@ -1,0 +1,46 @@
+{
+   "AWSTemplateFormatVersion" : "2010-09-09",
+   "Resources" : {
+      "CustomerGateway" : {
+         "Type" : "AWS::EC2::CustomerGateway",
+         "Properties" : {
+            "Type" : "ipsec.1",
+            "BgpAsn" : "64000",
+            "IpAddress" : "112.123.145.120",  					### Public IP of Firewall
+		"Tags" : [ { "Key" : "Name", "Value" : "Customer-Gateway" } ]
+         }
+      },
+	  "VirtualPrivateGateway" : {
+         "Type" : "AWS::EC2::VPNGateway",
+         "Properties" : {
+            "Type" : "ipsec.1",
+            "Tags" : [ { "Key" : "Name", "Value" : "VPG" } ]
+         }
+      },
+	  
+	  "AttachVpnGateway" : {
+   "Type" : "AWS::EC2::VPCGatewayAttachment",
+   "Properties" : {
+      "VpcId" : "vpc-123345", 							### VPC To which this VPN will be serving
+      "VpnGatewayId" : { "Ref" : "VirtualPrivateGateway" }
+			}
+		},
+	  "VPNConnection" : {
+		"Type" : "AWS::EC2::VPNConnection",
+			"Properties" : {
+			"Type" : "ipsec.1",
+			"StaticRoutesOnly" : "true",
+			"CustomerGatewayId" : {"Ref" : "CustomerGateway"},
+			"VpnGatewayId" : {"Ref" : "VirtualPrivateGateway"}
+			}			
+	 },
+		"VPNStaticRoute" : {
+			"Type" : "AWS::EC2::VPNConnectionRoute",
+				"Properties" : {
+				"DestinationCidrBlock" : "192.168.0.0/16",    ###This is the private network of on-premises
+				"VpnConnectionId" : {"Ref" : "VPNConnection"}
+				}
+			}
+	 	
+	}
+}
