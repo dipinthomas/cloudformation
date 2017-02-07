@@ -1,0 +1,25 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",	
+	
+"Resources": {
+    "PrivateHostedZone": {
+      "Type": "AWS::Route53::HostedZone",
+      "Properties": {
+        "HostedZoneConfig": {
+          "Comment": "Private Hosted Zone"
+        },
+        "Name": "database.com",
+        "VPCs": [{
+          "VPCId": "vpc-123456" ,
+          "VPCRegion": "us-east-1"
+        }],
+        "HostedZoneTags" : [{
+          "Key": "Environment",
+          "Value": "Development"
+        }]
+      }
+    }
+
+ } 
+
+}
