@@ -1,0 +1,68 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+		"EnvironmentName": {
+			"Type": "String",
+				"AllowedValues": ["Dev", "Test", "QA", "Stage", "Prod"],
+					"Description": "Name of the environment to be created"	
+				},
+
+
+		"RDS1": {
+			"Type" : "String",
+				"AllowedValues" : ["RDS-HostName", "RDS-HostName2"],
+					"Description" :  "RDS HostName"
+				},
+				
+	
+		"RDS2": {
+			"Type" : "String",
+				"AllowedValues" : ["RDS-HostName1", "RDS-HostName2"],
+					"Description" :  "RDS HostName"
+				},			
+			
+		"RDS3": {
+			"Type" : "String",
+				"AllowedValues" : ["RDS-HostName1", "RDS-HostName2"],
+					"Description" :  "RDS HostName"
+				}
+		
+			},	
+		
+			
+	
+"Resources": {	
+	"RecordSet": {
+		"Type" : "AWS::Route53::RecordSetGroup",
+		"Properties" : {
+			"HostedZoneId" : " ", 										### Add Hosted Zone ID this will be output of my first file
+			"RecordSets" : [ 
+
+			{
+				"Name" : {"Fn::Join": [".", ["Database1", {"Ref": "EnvironmentName"}, "db", "io"]]},  ### Joining of database name, Environment & domain name. 
+				"Type" : "CNAME",
+				"TTL" : "900",
+				"ResourceRecords" : [ {"Ref": "RDS1"} ]
+				},
+				
+{
+				"Name" : {"Fn::Join": [".", ["Database2", {"Ref": "EnvironmentName"}, "db", "io"]]},
+				"Type" : "CNAME",
+				"TTL" : "900",
+				"ResourceRecords" : [ {"Ref": "RDS3"} ]
+				},
+
+{
+				"Name" : {"Fn::Join": [".", ["Database3", {"Ref": "EnvironmentName"}, "db", "io"]]},
+				"Type" : "CNAME",
+				"TTL" : "900",
+				"ResourceRecords" : [ {"Ref": "RDS2"} ]
+				}          
+					
+			]
+		}
+	}
+
+}
+
+}
